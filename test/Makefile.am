@@ -4,7 +4,7 @@
 # Ed Hartnett, 5/21/18
 
 # Find include directory.
-#AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 # Link to GPTL library.
 AM_LDFLAGS = ${top_builddir}/src/clib/libgptlf.la

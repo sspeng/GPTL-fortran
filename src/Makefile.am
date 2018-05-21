@@ -4,7 +4,7 @@
 # library.
 # Ed Hartnett 5/21/18
 
-#AM_CPPFLAGS = -I$(top_srcdir)/include 
+AM_CPPFLAGS = -I$(top_srcdir)/include 
 
 libgptlf_la_CPPFLAGS = ${AM_CPPFLAGS}
 
