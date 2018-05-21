@@ -10,8 +10,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_LDFLAGS = ${top_builddir}/src/clib/libgptlf.la
 
 # # Test programs that will be built for all configurations.
-# check_PROGRAMS = tst_simple global
-# TESTS = tst_simple global
+check_PROGRAMS = testinit
+TESTS = testinit
 
 # # Build these tests if PAPI is present.
 # if HAVE_PAPI
