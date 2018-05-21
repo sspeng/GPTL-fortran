@@ -30,6 +30,14 @@ LT_INIT()
 # Find the Fortran compiler.
 AC_PROG_FC()
 
+# We need the math library for some tests.
+AC_CHECK_LIB([gptl], [GPTLinitialize], [],
+                  [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
+
+dnl # We need the math library for some tests.
+dnl AC_CHECK_LIB([m], [floor], [],
+dnl                   [AC_MSG_ERROR([Can't find or link to the math library.])])
+
 dnl dnl This barfs when CC is pgcc and F77 pgf90
 dnl AC_FC_FUNC(z_zz,z_zz)
 dnl case $z_zz in
