@@ -4,9 +4,15 @@
 # library.
 # Ed Hartnett 5/21/18
 
-AM_CPPFLAGS = -I$(top_srcdir)/include 
+libgptlf_la_FCFLAGS = -I$(top_srcdir)/include 
 
-libgptlf_la_CPPFLAGS = ${AM_CPPFLAGS}
+if HAVE_PAPI
+libgptlf_la_FCFLAGS += -DHAVE_PAPI
+endif
+
+if HAVE_MPI
+libgptlf_la_FCFLAGS += -DHAVE_MPI
+endif
 
 # This is our output. The GPTL-fortran library.
 lib_LTLIBRARIES = libgptlf.la

@@ -24,15 +24,24 @@ AM_INIT_AUTOMAKE([foreign subdir-objects])
 LT_PREREQ([2.4])
 LT_INIT()
 
-# The config.h file will be created when configure script is run.
-#AC_CONFIG_HEADERS([config.h])
-
 # Find the Fortran compiler.
 AC_PROG_FC()
 
-# We need the math library for some tests.
+# Find the GPTL C library.
 AC_CHECK_LIB([gptl], [GPTLinitialize], [],
                   [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
+
+# Check for papi library.
+AC_CHECK_LIB([papi], [PAPI_library_init])
+AM_CONDITIONAL([HAVE_PAPI], [test "x$ac_cv_lib_papi_PAPI_library_init" = xyes])
+if test "x$ac_cv_lib_papi_PAPI_library_init" = xyes; then
+   AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
+fi
+
+# Do we have MPI?
+AC_CHECK_FUNC([MPI_Init],
+        [AC_DEFINE([HAVE_MPI], [1], [MPI is present])])
+AM_CONDITIONAL([HAVE_MPI], [test "x$ac_cv_func_MPI_Init" = xyes])
 
 dnl # We need the math library for some tests.
 dnl AC_CHECK_LIB([m], [floor], [],

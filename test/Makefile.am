@@ -3,15 +3,16 @@
 # This is the automake file for GPTL Fortran tests.
 # Ed Hartnett, 5/21/18
 
-# Find include directory.
-AM_CPPFLAGS = -I$(top_srcdir)/include
+# Find include directory and src directory (for .mod file).
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 
 # Link to GPTL library.
-AM_LDFLAGS = ${top_builddir}/src/clib/libgptlf.la
+AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # # Test programs that will be built for all configurations.
 check_PROGRAMS = testinit
 TESTS = testinit
+testinit_SOURCES = testinit.F90
 
 # # Build these tests if PAPI is present.
 # if HAVE_PAPI
