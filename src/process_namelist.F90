@@ -18,7 +18,7 @@ subroutine gptlprocess_namelist (filename, unitno, outret)
   integer, intent(in) :: unitno             ! Fortran unit number to open
   integer, intent(out) :: outret            ! Output return code
 
-#include "./gptl.inc"
+#include "gptl.inc"
 
   integer :: j    ! loop index
   integer :: ios  ! status return from file open
