@@ -17,9 +17,9 @@ testinit_SOURCES = testinit.F90
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
 AM_CPPFLAGS += -DHAVE_PAPI
-check_PROGRAMS += testpapi
-TESTS += testpapi
-testpapi_SOURCES = testpapi.F90
+#check_PROGRAMS += testpapi
+#TESTS += testpapi
+#testpapi_SOURCES = testpapi.F90
 endif
 
 if HAVE_MPI
