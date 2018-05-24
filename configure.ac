@@ -28,11 +28,14 @@ LT_INIT()
 AC_PROG_FC()
 
 # Check for papi library.
-AC_CHECK_LIB([papi], [PAPI_library_init])
-AM_CONDITIONAL([HAVE_PAPI], [test "x$ac_cv_lib_papi_PAPI_library_init" = xyes])
-if test "x$ac_cv_lib_papi_PAPI_library_init" = xyes; then
+AC_CHECK_LIB([papi], [PAPI_library_init], [], [have_papi=no])
+test "x$have_papi" = xno || have_papi=yes
+AM_CONDITIONAL([HAVE_PAPI], [test "x$have_papi" = xyes])
+if test "x$have_papi" = xyes; then
    AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
 fi
+AC_MSG_CHECKING([whether PAPI library is present])
+AC_MSG_RESULT($have_papi)
 
 # Find the GPTL C library.
 AC_CHECK_LIB([gptl], [GPTLinitialize], [],

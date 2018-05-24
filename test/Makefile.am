@@ -9,20 +9,21 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 # Link to GPTL library.
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
-libgptlf_la_FCFLAGS = -I$(top_srcdir)/include
-
-if HAVE_PAPI
-libgptlf_la_FCFLAGS += -DHAVE_PAPI
-endif
-
-if HAVE_MPI
-libgptlf_la_FCFLAGS += -DHAVE_MPI
-endif
-
 # Test programs that will be built for all configurations.
 check_PROGRAMS = testinit
 TESTS = testinit
 testinit_SOURCES = testinit.F90
+
+if HAVE_PAPI
+AM_CPPFLAGS += -DHAVE_PAPI
+check_PROGRAMS += testpapi
+TESTS += testpapi
+testpapi_SOURCES = testpapi.F90
+endif
+
+if HAVE_MPI
+AM_CPPFLAGS += -DHAVE_MPI
+endif
 
 # Test output to be deleted.
 CLEANFILES = timing.*
