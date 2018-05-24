@@ -27,16 +27,16 @@ LT_INIT()
 # Find the Fortran compiler.
 AC_PROG_FC()
 
-# Find the GPTL C library.
-AC_CHECK_LIB([gptl], [GPTLinitialize], [],
-                  [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
-
 # Check for papi library.
 AC_CHECK_LIB([papi], [PAPI_library_init])
 AM_CONDITIONAL([HAVE_PAPI], [test "x$ac_cv_lib_papi_PAPI_library_init" = xyes])
 if test "x$ac_cv_lib_papi_PAPI_library_init" = xyes; then
    AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
 fi
+
+# Find the GPTL C library.
+AC_CHECK_LIB([gptl], [GPTLinitialize], [],
+                  [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
 
 # Do we have MPI?
 AC_CHECK_FUNC([MPI_Init],
