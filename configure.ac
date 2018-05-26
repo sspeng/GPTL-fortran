@@ -30,12 +30,6 @@ AC_PROG_FC()
 # Check for papi library.
 AC_CHECK_LIB([papi], [PAPI_library_init], [], [have_papi=no])
 test "x$have_papi" = xno || have_papi=yes
-AM_CONDITIONAL([HAVE_PAPI], [test "x$have_papi" = xyes])
-if test "x$have_papi" = xyes; then
-   AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
-fi
-AC_MSG_CHECKING([whether PAPI library is present])
-AC_MSG_RESULT($have_papi)
 
 # Find the GPTL C library.
 AC_CHECK_LIB([gptl], [GPTLinitialize], [],
@@ -45,6 +39,22 @@ AC_CHECK_LIB([gptl], [GPTLinitialize], [],
 AC_CHECK_FUNC([MPI_Init],
         [AC_DEFINE([HAVE_MPI], [1], [MPI is present])])
 AM_CONDITIONAL([HAVE_MPI], [test "x$ac_cv_func_MPI_Init" = xyes])
+
+# See if the C GPTL was built with PAPI.
+AC_CHECK_FUNC([gptl_papilibraryinit], [c_has_papi=yes], [c_has_papi=no])
+if test $have_papi = yes -a $c_has_papi = no; then
+   AC_MSG_CHECKING([PAPI library is present, but was not built into C library. Turning PAPI off.])
+   $have_papi=no
+fi
+
+# Determine the have_papi settings for this build.
+AC_MSG_CHECKING([whether PAPI library is present and should be used])
+AM_CONDITIONAL([HAVE_PAPI], [test "x$have_papi" = xyes])
+if test "x$have_papi" = xyes; then
+   AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
+fi
+AC_MSG_RESULT($have_papi)
+
 
 dnl # We need the math library for some tests.
 dnl AC_CHECK_LIB([m], [floor], [],

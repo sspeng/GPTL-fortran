@@ -10,16 +10,17 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # Test programs that will be built for all configurations.
-check_PROGRAMS = testinit
-TESTS = testinit
-testinit_SOURCES = testinit.F90
+check_PROGRAMS = errtest
+TESTS = errtest
+errtest_SOURCES = errtest.F90
 
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
 AM_CPPFLAGS += -DHAVE_PAPI
-#check_PROGRAMS += testpapi
-#TESTS += testpapi
-#testpapi_SOURCES = testpapi.F90
+check_PROGRAMS += testinit testpapi
+TESTS += testinit testpapi 
+testpapi_SOURCES = testpapi.F90
+testinit_SOURCES = testinit.F90
 endif
 
 if HAVE_MPI
