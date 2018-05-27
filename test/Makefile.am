@@ -12,7 +12,7 @@ AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 # Test programs that will be built for all configurations.
 check_PROGRAMS = testbasics errtest handle  outoforder	\
 overhead testbacktrace
-TESTS = testbasics errtest handle outoforder testbacktrace
+TESTS = testbasics errtest handle outoforder testbacktrace nlreader
 
 # Tests overhead and nlreader do not succeed yet.
 # overhead  nlreader
@@ -50,3 +50,6 @@ endif
 
 # Test output to be deleted.
 CLEANFILES = timing.*
+
+# This file is required for the nlreader test.
+EXTRA_DIST = gptlnl
