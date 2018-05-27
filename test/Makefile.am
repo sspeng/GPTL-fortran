@@ -10,8 +10,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # Test programs that will be built for all configurations.
-check_PROGRAMS = errtest handle
-TESTS = errtest handle
+check_PROGRAMS = errtest handle nlreader
+TESTS = errtest handle nlreader
 errtest_SOURCES = errtest.F90
 handle_SOURCES = handle.F90
 
