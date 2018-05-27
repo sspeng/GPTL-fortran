@@ -56,6 +56,19 @@ fi
 AC_MSG_RESULT($have_papi)
 
 
+# Check for function backtrace_symbols. If HAVE_BACKTRACE=yes will
+# enable auto-generation of function name when auto-profiling and
+# GPTLdopr_memusage has been enabled at run-time. If
+# HAVE_BACKTRACE=no, function address will be printed instead.  GNU
+# compilers: compile application code with -finstrument-functions
+# -rdynamic Intel compilers: compile application code with
+# -finstrument-functions -rdynamic -g
+AC_CHECK_FUNC([backtrace_symbols], [have_backtrace=yes], [have_backtrace=no])
+if test $have_backtrace = yes; then
+   AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace_symbols function is present])
+fi
+AM_CONDITIONAL([HAVE_BACKTRACE], [test "x$have_backtrace" = xyes])
+
 dnl # We need the math library for some tests.
 dnl AC_CHECK_LIB([m], [floor], [],
 dnl                   [AC_MSG_ERROR([Can't find or link to the math library.])])

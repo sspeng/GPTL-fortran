@@ -10,13 +10,22 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # Test programs that will be built for all configurations.
-check_PROGRAMS = errtest handle nlreader outoforder overhead
-TESTS = errtest handle nlreader outoforder overhead
+check_PROGRAMS = errtest handle nlreader outoforder overhead testbacktrace
+TESTS = errtest handle nlreader outoforder testbacktrace
+# overhead
+
 errtest_SOURCES = errtest.F90
 handle_SOURCES = handle.F90
 nlreader_SOURCES = nlreader.F90
 outoforder_SOURCES = outoforder.F90
 overhead_SOURCES = overhead.F90
+
+# Extra test if we have backtrace.
+if HAVE_BACKTRACE
+check_PROGRAMS += testbacktrace
+TESTS += testbacktrace
+testbacktrace_SOURCES = testbacktrace.F90
+endif
 
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
