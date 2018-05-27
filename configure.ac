@@ -44,7 +44,7 @@ AM_CONDITIONAL([HAVE_MPI], [test "x$ac_cv_func_MPI_Init" = xyes])
 AC_CHECK_FUNC([gptl_papilibraryinit], [c_has_papi=yes], [c_has_papi=no])
 if test $have_papi = yes -a $c_has_papi = no; then
    AC_MSG_CHECKING([PAPI library is present, but was not built into C library. Turning PAPI off.])
-   $have_papi=no
+   have_papi=no
 fi
 
 # Determine the have_papi settings for this build.

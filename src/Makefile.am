@@ -17,8 +17,8 @@ endif
 # This is our output. The GPTL-fortran library.
 lib_LTLIBRARIES = libgptlf.la
 libgptlf_la_SOURCES = gptlf.F90 printmpistatussize.F90	\
-process_namelist.F90 timingModule.F90
+process_namelist.F90
 
 # Install these in the include directory.
-include_HEADERS = gptl.mod timingmodule.mod
+include_HEADERS = gptl.mod
 
