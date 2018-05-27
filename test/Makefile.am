@@ -10,10 +10,15 @@ AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # Test programs that will be built for all configurations.
-check_PROGRAMS = errtest handle nlreader outoforder overhead testbacktrace
-TESTS = errtest handle nlreader outoforder testbacktrace
+check_PROGRAMS = testbasics errtest handle nlreader outoforder	\
+overhead testbacktrace
+TESTS = testbasics errtest handle nlreader outoforder testbacktrace
+
+# Tese overhead does not succeed yet.
 # overhead
 
+# Test dependancies needed.
+testbasics_SOURCES = testbasics.F90
 errtest_SOURCES = errtest.F90
 handle_SOURCES = handle.F90
 nlreader_SOURCES = nlreader.F90
@@ -36,9 +41,12 @@ testpapi_SOURCES = testpapi.F90
 testinit_SOURCES = testinit.F90
 endif
 
-if HAVE_MPI
-AM_CPPFLAGS += -DHAVE_MPI
-endif
+# Extra test for parallel builds. (Does not build yet).
+#if HAVE_MPI
+# check_PROGRAMS += threadohd
+# TESTS += threadohd
+# threadohd_SOURCES = threadohd.F90
+#endif
 
 # Test output to be deleted.
 CLEANFILES = timing.*
