@@ -14,6 +14,7 @@ check_PROGRAMS = errtest handle nlreader
 TESTS = errtest handle nlreader
 errtest_SOURCES = errtest.F90
 handle_SOURCES = handle.F90
+nlreader_SOURCES = nlreader.F90
 
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
