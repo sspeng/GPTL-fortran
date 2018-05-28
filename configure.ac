@@ -82,6 +82,10 @@ dnl     Z_ZZ)       echo "Fortran name mangling: UNDERSCORING=-DFORTRANCAPS" ;;
 dnl     *)          echo "Fortran name mangling: UNDERSCORING=" ;;
 dnl esac
 
+# Make sure this file is copied to build directories for tests to
+# work.
+AC_CONFIG_LINKS([test/gptlnl:test/gptlnl])
+
 # Is doxygen installed?
 AC_CHECK_PROGS([DOXYGEN], [doxygen])
 if test -z "$DOXYGEN"; then
