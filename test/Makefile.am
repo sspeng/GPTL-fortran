@@ -11,11 +11,11 @@ AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
 
 # Test programs that will be built for all configurations.
 check_PROGRAMS = testbasics errtest handle  outoforder	\
-overhead testbacktrace
+overhead testbacktrace nlreader
 TESTS = testbasics errtest handle outoforder testbacktrace nlreader
 
 # Tests overhead and nlreader do not succeed yet.
-# overhead  nlreader
+# overhead  
 
 # Test dependancies needed.
 testbasics_SOURCES = testbasics.F90
