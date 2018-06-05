@@ -3,11 +3,10 @@ program overhead
 
   implicit none
 
-  integer :: ret, iter, i
+  integer :: ret, i
   real*8 :: wall1, usr1, sys1
   real*8 :: wall2, usr2, sys2
   integer :: cycles1, cycles2, cps
-  character(len=16) :: msg
   integer :: handle
 #ifdef THREADED_OMP
   integer, parameter :: maxthreads = 8
@@ -137,10 +136,10 @@ program overhead
     call system_clock (cycles1, cps)
 !$OMP PARALLEL DO PRIVATE (RET) FIRSTPRIVATE (HANDLE)
     do i=1,10000000
-      call do_nothing1 ('string1', handle)
-      call do_nothing2 ('string2', handle)
-      call do_nothing1 ('string3', handle)
-      call do_nothing2 ('string4', handle)
+      call do_nothing1 ('string1')
+      call do_nothing2 ('string2')
+      call do_nothing1 ('string3')
+      call do_nothing2 ('string4')
     end do
     call system_clock (cycles2, cps)
     write(1,'(i3,f9.3)') nthreads, float((cycles2-cycles1))/cps
@@ -151,22 +150,20 @@ program overhead
   stop 0
 end program overhead
 
-subroutine do_nothing1 (string, handle)
+subroutine do_nothing1 (string)
   implicit none
 
   character(len=*), intent(in) :: string
-  integer, intent(in) :: handle
 
   if (string(1:1) == 'x') then
     write(6,*)'Bad string value'
   end if
 end subroutine do_nothing1
 
-subroutine do_nothing2 (string, handle)
+subroutine do_nothing2 (string)
   implicit none
 
   character(len=*), intent(in) :: string
-  integer, intent(in) :: handle
 
   if (string(1:1) == 'x') then
     write(6,*)'Bad string value'
