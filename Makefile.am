@@ -1,6 +1,3 @@
-## This is a automake file, part of the GPTL-fortran package.
-# Copyright 2018, see the COPYING file for more information.
-
 # This is the main automake file for the GPTL fortran API.
 # Ed Hartnett, 5/21/18
 
@@ -12,7 +9,7 @@ EXTRA_DIST = COPYING
 
 # This is the list of subdirs for which Makefiles will be constructed
 # and run.
-SUBDIRS = src test
+SUBDIRS = src test include
 
 install-data-hook:
 
