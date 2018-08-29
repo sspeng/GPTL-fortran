@@ -27,6 +27,14 @@ LT_INIT()
 # Find the Fortran compiler.
 AC_PROG_FC()
 
+# Set HAVE_NANOTIME on x86 systems only.
+AC_MSG_CHECKING([whether x86 nanotime is available])
+AS_CASE([$host], [*86*], [have_nanotime=yes], [have_nanotime=no])
+if test "x$have_nanotime" = xyes; then
+   AC_DEFINE([HAVE_NANOTIME], [1], [x86 nanotime capability is present])
+fi
+AC_MSG_RESULT($have_nanotime)
+
 # Check for papi library.
 AC_CHECK_LIB([papi], [PAPI_library_init], [], [have_papi=no])
 test "x$have_papi" = xno || have_papi=yes
