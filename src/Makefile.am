@@ -4,7 +4,7 @@
 # library.
 # Ed Hartnett 5/21/18
 
-libgptlf_la_FCFLAGS = -I$(top_srcdir)/include 
+libgptlf_la_FCFLAGS = -I$(top_srcdir)/include
 
 if HAVE_PAPI
 libgptlf_la_FCFLAGS += -DHAVE_PAPI
