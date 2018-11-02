@@ -39,14 +39,19 @@ AC_MSG_RESULT($have_nanotime)
 AC_CHECK_LIB([papi], [PAPI_library_init], [], [have_papi=no])
 test "x$have_papi" = xno || have_papi=yes
 
+# When built as part of the combined C/Fortran library distribution,
+# the fortran library needs to be built with
+# --enable-package-build. This tells the fortran library where to find
+# the C library.
 AC_ARG_ENABLE([package-build],
   [AS_HELP_STRING([--enable-package-build],
     [Set internally for package builds, should not be used by user.])])
 test "x$enable_package_build" = xyes || enable_package_build=no
 AM_CONDITIONAL([BUILD_PACKAGE], [test "x$enable_package_build" = xyes])
 
+# Find the GPTL C library, unless this is a combined C/Fortran library
+# build.
 if test $enable_package_build = no; then
-   # Find the GPTL C library.
    AC_CHECK_LIB([gptl], [GPTLinitialize], [],
                         [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
 fi
