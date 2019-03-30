@@ -39,9 +39,22 @@ AC_MSG_RESULT($have_nanotime)
 AC_CHECK_LIB([papi], [PAPI_library_init], [], [have_papi=no])
 test "x$have_papi" = xno || have_papi=yes
 
-# Find the GPTL C library.
-AC_CHECK_LIB([gptl], [GPTLinitialize], [],
-                  [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
+# When built as part of the combined C/Fortran library distribution,
+# the fortran library needs to be built with
+# --enable-package-build. This tells the fortran library where to find
+# the C library.
+AC_ARG_ENABLE([package-build],
+  [AS_HELP_STRING([--enable-package-build],
+    [Set internally for package builds, should not be used by user.])])
+test "x$enable_package_build" = xyes || enable_package_build=no
+AM_CONDITIONAL([BUILD_PACKAGE], [test "x$enable_package_build" = xyes])
+
+# Find the GPTL C library, unless this is a combined C/Fortran library
+# build.
+if test $enable_package_build = no; then
+   AC_CHECK_LIB([gptl], [GPTLinitialize], [],
+                        [AC_MSG_ERROR([Can't find or link to the GPTL C library.])])
+fi
 
 # Do we have MPI?
 AC_CHECK_FUNC([MPI_Init],
@@ -62,7 +75,6 @@ if test "x$have_papi" = xyes; then
    AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present])
 fi
 AC_MSG_RESULT($have_papi)
-
 
 # Check for function backtrace_symbols. If HAVE_BACKTRACE=yes will
 # enable auto-generation of function name when auto-profiling and

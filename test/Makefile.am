@@ -6,8 +6,13 @@
 # Find include directory and src directory (for .mod file).
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 
-# Link to GPTL library.
+# Link to GPTL fortran library.
 AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
+
+# For combined C/Fortran builds, find the C library.
+if BUILD_PACKAGE
+LDADD = ${top_builddir}/../GPTL/src/libgptl.la
+endif
 
 MODFILE = ${top_builddir}/src/gptl.mod
 
