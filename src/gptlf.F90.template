@@ -75,7 +75,7 @@ module gptl
        character(len=*) :: file
      end function gptlpr_file
 
-#ifdef HAVE_MPI
+#ifdef HAVE_LIBMPI
      integer function gptlpr_summary (fcomm)
        integer :: fcomm
      end function gptlpr_summary
