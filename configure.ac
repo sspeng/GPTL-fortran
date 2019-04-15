@@ -64,8 +64,8 @@ AC_CHECK_FUNC([MPI_Send], [c_enabled_pmpi=yes], [c_enabled_pmpi=no])
 if test $c_enabled_pmpi = yes; then
    AC_DEFINE([ENABLE_PMPI], [1], [--enable-pmpi was specified in the C library build])
 fi
-AC_MSG_RESULT($have_pmpi)
-AM_CONDITIONAL([ENABLE_PMPI], [test "c$enabled_pmpi" = xyes])
+AC_MSG_RESULT($c_enabled_pmpi)
+AM_CONDITIONAL([ENABLE_PMPI], [test "$c_enabled_pmpi" = yes])
 
 # Check for function backtrace_symbols. If HAVE_BACKTRACE=yes will
 # enable auto-generation of function name when auto-profiling and

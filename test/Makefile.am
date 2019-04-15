@@ -16,51 +16,60 @@ endif
 
 MODFILE = ${top_builddir}/src/gptl.mod
 
+# These programs will be built but not installed.
+noinst_PROGRAMS = overhead utrtest handle
+
 # Test programs that will be built for all configurations.
-check_PROGRAMS = testbasics errtest handle  outoforder	\
-overhead testbacktrace nlreader
-TESTS = testbasics errtest handle outoforder testbacktrace nlreader
+check_PROGRAMS = testbasics errtest nlreader outoforder
+TESTS          = testbasics errtest nlreader outoforder
 
-# Tests overhead and nlreader do not succeed yet.
-# overhead  
-
-# Test dependancies needed.
+# Test dependencies needed.
 testbasics_SOURCES = testbasics.F90 ${MODFILE}
-errtest_SOURCES = errtest.F90 ${MODFILE}
-handle_SOURCES = handle.F90 ${MODFILE}
-nlreader_SOURCES = nlreader.F90 ${MODFILE}
+errtest_SOURCES    = errtest.F90    ${MODFILE}
+nlreader_SOURCES   = nlreader.F90   ${MODFILE}
 outoforder_SOURCES = outoforder.F90 ${MODFILE}
-overhead_SOURCES = overhead.F90 ${MODFILE}
+
+handle_SOURCES     = handle.F90     ${MODFILE}
+overhead_SOURCES   = overhead.F90   ${MODFILE}
+utrtest_SOURCES    = utrtest.F90    ${MODFILE}
+
+if HAVE_OPENMP
+noinst_PROGRAMS  += threadohd
+threadohd_SOURCES = threadohd.F90 ${MODFILE}
+endif
 
 # Extra test if we have backtrace.
 if HAVE_BACKTRACE
-check_PROGRAMS += testbacktrace
-TESTS += testbacktrace
+check_PROGRAMS       += testbacktrace
+TESTS                += testbacktrace
 testbacktrace_SOURCES = testbacktrace.F90 ${MODFILE}
 endif
 
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
-AM_CPPFLAGS += -DHAVE_PAPI
-check_PROGRAMS += testinit testpapi
-TESTS += testinit testpapi 
+#AM_CPPFLAGS     += -DHAVE_PAPI
+check_PROGRAMS  += testinit testpapi
+TESTS           += testinit testpapi 
 testpapi_SOURCES = testpapi.F90 ${MODFILE}
 testinit_SOURCES = testinit.F90 ${MODFILE}
 endif
 
-# Extra test for parallel builds. (Does not build yet).
+# MPI program tests
 if HAVE_LIBMPI
+# Test the PMPI interface (if installed)
+if ENABLE_PMPI
 check_PROGRAMS += pmpi
-TESTS += pmpi
-pmpi_SOURCES = pmpi.F90 ${MODFILE}
+TESTS          += pmpi
+pmpi_SOURCES    = pmpi.F90 ${MODFILE}
+endif
 
-check_PROGRAMS += threadohd
-TESTS += threadohd
-threadohd_SOURCES = threadohd.F90 ${MODFILE}
+check_PROGRAMS += summary
+TESTS          += summary
+summary_SOURCES = summary.F90 ${MODFILE}
 endif
 
 # Test output to be deleted.
-CLEANFILES = timing.*
+CLEANFILES = timing.* *_ohd
 
 # This file is required for the nlreader test.
 EXTRA_DIST = gptlnl
