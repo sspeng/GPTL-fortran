@@ -49,11 +49,15 @@ testinit_SOURCES = testinit.F90 ${MODFILE}
 endif
 
 # Extra test for parallel builds. (Does not build yet).
-#if HAVE_MPI
-# check_PROGRAMS += threadohd
-# TESTS += threadohd
-# threadohd_SOURCES = threadohd.F90 ${MODFILE}
-#endif
+if HAVE_LIBMPI
+check_PROGRAMS += pmpi
+TESTS += pmpi
+pmpi_SOURCES = pmpi.F90 ${MODFILE}
+
+check_PROGRAMS += threadohd
+TESTS += threadohd
+threadohd_SOURCES = threadohd.F90 ${MODFILE}
+endif
 
 # Test output to be deleted.
 CLEANFILES = timing.*

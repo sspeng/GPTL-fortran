@@ -49,10 +49,8 @@ program pmpi
   ret = gptlsetoption (gptlabort_on_error, 1)
   ret = gptlsetoption (gptlsync_mpi, 1)
 
-#if ( ! defined HAVE_IARGCGETARG )
   ret = gptlinitialize ()
   ret = gptlstart ("total")
-#endif
 
   call mpi_init (ret)
 
@@ -374,20 +372,8 @@ program pmpi
 !
   call mpi_finalize (ret)
 
-#if ( defined HAVE_IARGCGETARG )
-  if (iam == 0) then
-    write(6,*)'Testing for auto-generated MPI_Init_thru_Finalize region...'
-    ret = gptlquery ('MPI_Init_thru_Finalize', 0, kount, of, wc, usr, sys, pc, 0)
-    if (ret == 0) then
-      write(6,*)'Success'
-    else
-      write(6,*)'Failure'
-    end if
-  end if
-#else
   ret = gptlstop ("total")
   ret = gptlpr (iam)
-#endif
 
   stop 0
 end program pmpi
