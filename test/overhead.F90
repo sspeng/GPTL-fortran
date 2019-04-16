@@ -10,7 +10,7 @@ program overhead
   character(len=16) :: msg
   integer :: handle
 #ifdef THREADED_OMP
-  integer, parameter :: maxthreads = 8
+  integer, parameter :: maxthreads = 32
 #else
   integer, parameter :: maxthreads = 1
 #endif
@@ -20,7 +20,7 @@ program overhead
   integer, external :: omp_set_num_threads
 #endif
 
-  open (unit=1, file='gettimeofday', form='formatted', status='replace')
+  open (unit=1, file='gettimeofday_ohd', form='formatted', status='replace')
   nthreads = 1
   do while (nthreads <= maxthreads)
     write(6,*)'overhead: running gettimeofday nthreads=', nthreads
@@ -45,9 +45,9 @@ program overhead
   close (unit=1)
 
 #ifdef _AIX
-  open (unit=1, file='read_real_time', form='formatted', status='replace')
+  open (unit=1, file='read_real_time_ohd', form='formatted', status='replace')
 #else
-  open (unit=1, file='nanotime', form='formatted', status='replace')
+  open (unit=1, file='nanotime_ohd', form='formatted', status='replace')
 #endif
   nthreads = 1
   do while (nthreads <= maxthreads)
@@ -78,7 +78,7 @@ program overhead
   end do
   close (unit=1)
 
-  open (unit=1, file='no_wallclock', form='formatted', status='replace')
+  open (unit=1, file='no_wallclock_ohd', form='formatted', status='replace')
   nthreads = 1
   do while (nthreads <= maxthreads)
     write(6,*)'overhead: running no_wallclock nthreads=', nthreads
@@ -103,7 +103,7 @@ program overhead
   end do
   close (unit=1)
 
-  open (unit=1, file='handle', form='formatted', status='replace')
+  open (unit=1, file='handle_ohd', form='formatted', status='replace')
   nthreads = 1
   do while (nthreads <= maxthreads)
     write(6,*)'overhead: running handle (no_wallclock) nthreads=', nthreads
@@ -129,7 +129,7 @@ program overhead
   end do
   close (unit=1)
 
-  open (unit=1, file='do_nothing', form='formatted', status='replace')
+  open (unit=1, file='do_nothing_ohd', form='formatted', status='replace')
   nthreads = 1
   do while (nthreads <= maxthreads)
     write(6,*)'overhead: running do_nothing nthreads=', nthreads

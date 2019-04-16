@@ -1,16 +1,14 @@
 program main 
+#ifdef THREADED_OMP
+  use omp_lib
+#endif
+  use mpi
   use gptl
 
   implicit none
-
-#include <mpif.h>
-
-#ifdef THREADED_OMP
-  integer, external :: omp_get_max_threads
-#endif
-
   double precision, external :: sub
   double precision result
+  external :: checkstat
 
   integer :: iam
   integer :: nthreads = 1 ! number of threads (default 1)
@@ -21,6 +19,7 @@ program main
   integer :: comm = 0
   integer ierr
   integer ret
+  character(len=8), parameter :: prognam = 'summary'
 
 #ifdef HAVE_PAPI
 ! Turn abort_on_error off just long enough to check PAPI-based options
@@ -29,20 +28,23 @@ program main
     ret = gptlsetoption (code, 1)
   end if
   ret = gptlsetoption (gptl_ci, 1)
+  call checkstat (ret, prognam//': Error from PAPI call: gptlsetoption (gptl_ci, 1)')
   ret = gptlsetoption (gptlabort_on_error, 1)
 #endif
 
   ret = gptlsetoption (gptlabort_on_error, 1)
+  call checkstat (ret, prognam//': Error from gptlsetoption(gptlabort_on_error,1)')
   ret = gptlsetoption (gptloverhead, 1)
+  call checkstat (ret, prognam//': Error from gptlsetoption(gptloverhead,1)')
   ret = gptlsetoption (gptlnarrowprint, 1)
+  call checkstat (ret, prognam//': Error from gptlsetoption(gptlnarrowprint,1)')
 
   call mpi_init (ierr)
   comm = MPI_COMM_WORLD
 
-#ifndef ENABLE_PMPI
   ret = gptlinitialize ()
+  call checkstat (ret, prognam//': Error from gptlinitialize()')
   ret = gptlstart ("total")
-#endif
 	 
   call mpi_comm_rank (MPI_COMM_WORLD, iam, ierr)
   call mpi_comm_size (MPI_COMM_WORLD, nproc, ierr)
@@ -61,24 +63,16 @@ program main
     result = sub (iter, iam)
   end do
 
-#ifndef ENABLE_PMPI
   ret = gptlstop ("total")
   ret = gptlpr (iam)
-#endif
+  call checkstat (ret, prognam//': Error from gptlpr(iam)')
   ret = gptlpr_summary (comm)
-  if (ret /= 0) then
-    write(6,*)'summary.F90: error from gptlpr_summary'
-    stop 1
-  end if
-  ret = gptlpr_summary_file (comm, "timing.summary.duplicate")
-  if (ret /= 0) then
-    write(6,*)'summary.F90: error from gptlpr_summary_file'
-    stop 1
-  end if
+  call checkstat (ret, prognam//': Error from gptlpr_summary(comm)')
 
   call mpi_finalize (ret)
 
-  if (gptlfinalize () < 0) stop 1
+  ret = gptlfinalize ()
+  call checkstat (ret, prognam//': Error from gptlfinalize()')
   stop 0
 end program main
 
@@ -126,3 +120,15 @@ double precision function sub (iter, iam)
   sub = sum
   return 
 end function sub
+
+subroutine checkstat (ret, str)
+  implicit none
+
+  integer, intent(in) :: ret
+  character(len=*), intent(in) :: str
+
+  if (ret /= 0) then
+    write(6,*) 'Bad return code=', ret, ' ', str
+    stop 1
+  end if
+end subroutine checkstat
