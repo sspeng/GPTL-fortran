@@ -67,18 +67,53 @@ fi
 AC_MSG_RESULT($c_enabled_pmpi)
 AM_CONDITIONAL([ENABLE_PMPI], [test "$c_enabled_pmpi" = yes])
 
-# Check for function backtrace_symbols. If HAVE_BACKTRACE=yes will
-# enable auto-generation of function name when auto-profiling and
-# GPTLdopr_memusage has been enabled at run-time. If
-# HAVE_BACKTRACE=no, function address will be printed instead.  GNU
-# compilers: compile application code with -finstrument-functions
-# -rdynamic Intel compilers: compile application code with
-# -finstrument-functions -rdynamic -g
-AC_CHECK_FUNC([backtrace_symbols], [have_backtrace=yes], [have_backtrace=no])
-if test $have_backtrace = yes; then
-   AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace_symbols function is present])
+# AC_CHECK_LIB doesn't work for libunwind due to funkiness in the lib so use AC_CHECK_HEADER
+AC_MSG_CHECKING([for libunwind])
+AC_CHECK_HEADER([libunwind.h], found_libunwind=yes;)
+AC_MSG_RESULT([$ac_cv_libunwind_h])
+
+AC_MSG_CHECKING([for backtrace])
+AC_CHECK_FUNC([backtrace_symbols], found_backtrace=yes;)
+AC_MSG_RESULT([$ac_cv_func_backtrace_symbols])
+
+# For auto-profiling, backtrace is the default method to recover current function name.
+# If not available, try libunwind. If neither are available, auto-profiling will not be
+# possible. To use auto auto-profiling with GNU or Intel compilers:
+# Compile application code with -g -finstrument-functions -rdynamic
+#
+AC_ARG_ENABLE([libunwind],
+    AS_HELP_STRING([--enable-libunwind], [Enable auto-profiling capability via libunwind]))
+
+AC_ARG_ENABLE([backtrace],
+    AS_HELP_STRING([--enable-backtrace], [Enable auto-profiling capability via backtrace]))
+
+# Default is to enable auto-profiling capability via backtrace
+# Default is to disnable auto-profiling capability via libunwind.
+# Cannot have both methods enabled at once
+if test "x$enable_backtrace" != xno; then
+  if test "x$enable_libunwind" = xyes; then
+    AC_MSG_ERROR([--enable-libunwind requires --disable-backtrace])
+  fi
+# Set define for BACKTRACE if user didn't say no and backtrace found
+  if test "x$found_backtrace" = xyes; then
+    usebacktrace=yes;
+    AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace will be used])
+    AC_MSG_NOTICE([backtrace enabled for auto-profiling: Ensure LDFLAGS+= -rdynamic in profiled apps!!!])
+  fi
 fi
-AM_CONDITIONAL([HAVE_BACKTRACE], [test "x$have_backtrace" = xyes])
+
+# Set define for LIBUNWIND if user said yes and backtrace found
+if test "x$enable_libunwind" = xyes; then
+  if test "x$found_libunwind" = xyes; then
+    useunwind=yes;
+    AC_DEFINE([HAVE_LIBUNWIND], [1], [libunwind will be used])
+    AC_MSG_NOTICE([libunwind enabled for auto-profiling: Ensure LDFLAGS+= -rdynamic -lunwind in profiled apps!!!])
+  fi
+fi
+
+# Above logic ensures that both haveunwind and havebacktrace cannot both = yes
+AM_CONDITIONAL([HAVE_LIBUNWIND], [test x$useunwind = xyes])
+AM_CONDITIONAL([HAVE_BACKTRACE], [test x$usebacktrace = xyes])
 
 # Need current language to be Fortran to get AC_OPENMP to do the right thing
 AC_LANG_PUSH(Fortran)

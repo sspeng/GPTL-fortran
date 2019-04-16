@@ -7,11 +7,18 @@
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 
 # Link to GPTL fortran library.
-AM_LDFLAGS = ${top_builddir}/src/libgptlf.la
+AM_LDFLAGS = ${top_builddir}/src/libgptlf.la -rdynamic
 
 # For combined C/Fortran builds, find the C library.
+# Be careful making changes here: If -lunwind is needed it must come at the end of link cmds
 if BUILD_PACKAGE
 LDADD = ${top_builddir}/../GPTL/src/libgptl.la
+else
+LDADD =
+endif
+
+if HAVE_LIBUNWIND
+LDADD += -lunwind
 endif
 
 MODFILE = ${top_builddir}/src/gptl.mod
