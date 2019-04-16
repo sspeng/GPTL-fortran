@@ -10,8 +10,8 @@ if HAVE_PAPI
 libgptlf_la_FCFLAGS += -DHAVE_PAPI
 endif
 
-if HAVE_MPI
-libgptlf_la_FCFLAGS += -DHAVE_MPI
+if HAVE_LIBMPI
+libgptlf_la_FCFLAGS += -DHAVE_LIBMPI
 endif
 
 # This is our output. The GPTL-fortran library.
