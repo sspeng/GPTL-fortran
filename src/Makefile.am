@@ -19,6 +19,9 @@ lib_LTLIBRARIES = libgptlf.la
 libgptlf_la_SOURCES = gptlf.F90 printmpistatussize.F90	\
 process_namelist.F90
 
+# Each mod file depends on the .o file.
+gptl.mod: gptlf.$(OBJEXT)
+
 # Install these in the include directory.
 include_HEADERS = gptl.mod
 
