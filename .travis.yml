@@ -28,7 +28,7 @@ before_script:
   - tar zxf gptl-5.6.0.tar.gz
   - cd gptl-5.6.0
   - ./configure --prefix=/usr
-  - make -j install
+  - sudo make -j install
 
 
 env:
