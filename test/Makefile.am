@@ -76,7 +76,7 @@ summary_SOURCES = summary.F90 ${MODFILE}
 endif
 
 # Test output to be deleted.
-CLEANFILES = timing.* *_ohd
+CLEANFILES = timing.* *_ohd *.mod
 
 # This file is required for the nlreader test.
 EXTRA_DIST = gptlnl
