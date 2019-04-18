@@ -22,3 +22,4 @@ process_namelist.F90
 # Install these in the include directory.
 include_HEADERS = gptl.mod
 
+CLEANFILES = *.mod
