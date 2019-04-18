@@ -42,6 +42,7 @@ env:
 script:
   - autoreconf -i
   - ./configure
+  - make -j check
 
 
  
