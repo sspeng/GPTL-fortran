@@ -19,7 +19,8 @@ MODFILE = ${top_builddir}/src/gptl.mod
 # Test programs that will be built for all configurations.
 check_PROGRAMS = testbasics errtest handle  outoforder	\
 overhead testbacktrace nlreader
-TESTS = testbasics errtest handle outoforder testbacktrace nlreader
+#handle
+TESTS = testbasics errtest outoforder testbacktrace nlreader
 
 # Tests overhead and nlreader do not succeed yet.
 # overhead  
