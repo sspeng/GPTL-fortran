@@ -61,7 +61,7 @@ threadohd_SOURCES = threadohd.F90 ${MODFILE}
 endif
 
 # Test output to be deleted.
-CLEANFILES = timing.*
+CLEANFILES = timing.* *.mod
 
 # This file is required for the nlreader test.
 EXTRA_DIST = gptlnl
