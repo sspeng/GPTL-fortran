@@ -165,6 +165,13 @@ module gptl
        integer(8) :: papicounters_out
      end function gptlquerycounters
 
+     ! Get the wall clock time.
+     !
+     ! @param name Name of ???
+     ! @param t time?
+     ! @param value some value.
+     ! @return what?
+     ! @author Jim Rosinski
      integer function gptlget_wallclock (name, t, value)
        character(len=*) :: name
        integer :: t
