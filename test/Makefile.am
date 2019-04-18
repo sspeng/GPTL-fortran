@@ -56,7 +56,7 @@ TESTS += pmpi
 pmpi_SOURCES = pmpi.F90 ${MODFILE}
 
 check_PROGRAMS += threadohd
-TESTS += threadohd
+#TESTS += threadohd
 threadohd_SOURCES = threadohd.F90 ${MODFILE}
 endif
 
