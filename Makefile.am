@@ -4,12 +4,16 @@
 # This directory stores libtool macros, put there by aclocal.
 ACLOCAL_AMFLAGS = -I m4
 
-# These files get added to the distribution.
-EXTRA_DIST = COPYING
+if BUILD_DOCS
+DOCS = docs
+endif
 
 # This is the list of subdirs for which Makefiles will be constructed
 # and run.
-SUBDIRS = src test include
+SUBDIRS = src test include $(DOCS)
+
+# These files get added to the distribution.
+EXTRA_DIST = COPYING
 
 install-data-hook:
 

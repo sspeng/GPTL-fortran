@@ -38,7 +38,7 @@ if test $enable_docs = yes; then
       AC_MSG_ERROR([Doxygen is required to build the documentation.])
    fi
 fi
-#AM_CONDITIONAL([BUILD_DOCS], [test "x$enable_docs" = xyes])
+AM_CONDITIONAL([BUILD_DOCS], [test "x$enable_docs" = xyes])
 
 # When built as part of the combined C/Fortran library distribution,
 # the fortran library needs to be built with
@@ -139,6 +139,8 @@ AC_CONFIG_FILES([Makefile
                  include/Makefile
                  src/Makefile
                  test/Makefile
+                 docs/Doxyfile
+                 docs/Makefile
 		 ])
 
 # Build the files listed above.
