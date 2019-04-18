@@ -27,6 +27,19 @@ LT_INIT()
 # Find the Fortran compiler.
 AC_PROG_FC()
 
+# Does the user want to build documentation? Doxygen is required.
+AC_ARG_ENABLE([docs],
+  [AS_HELP_STRING([--enable-docs],
+    [Enable generation of documentation.])])
+test "x$enable_docs" = xyes || enable_docs=no
+if test $enable_docs = yes; then
+   AC_CHECK_PROGS([DOXYGEN], [doxygen])
+   if test -z "$DOXYGEN"; then
+      AC_MSG_ERROR([Doxygen is required to build the documentation.])
+   fi
+fi
+#AM_CONDITIONAL([BUILD_DOCS], [test "x$enable_docs" = xyes])
+
 # When built as part of the combined C/Fortran library distribution,
 # the fortran library needs to be built with
 # --enable-package-build. This tells the fortran library where to find
@@ -50,8 +63,8 @@ AC_CHECK_FUNC([MPI_Init],
 AM_CONDITIONAL([HAVE_LIBMPI], [test "x$ac_cv_func_MPI_Init" = xyes])
 
 # Determine the have_papi settings for this build.
-AC_MSG_CHECKING([whether PAPI library support was built into the C library])
 AC_CHECK_FUNC([gptl_papilibraryinit], [c_has_papi=yes], [c_has_papi=no])
+AC_MSG_CHECKING([whether PAPI library support was built into the C library])
 if test "$c_has_papi" = yes; then
    AC_DEFINE([HAVE_PAPI], [1], [PAPI library support is present])
 fi
@@ -59,13 +72,13 @@ AC_MSG_RESULT($c_has_papi)
 AM_CONDITIONAL([HAVE_PAPI], [test "$c_has_papi" = yes])
 
 # See if the C GPTL was built with ENABLE_PMPI, and set it here in accordance
-AC_MSG_CHECKING([whether ENABLE_PMPI was set in the C library build])
 AC_CHECK_FUNC([MPI_Send], [c_enabled_pmpi=yes], [c_enabled_pmpi=no])
+AC_MSG_CHECKING([whether ENABLE_PMPI was set in the C library build])
 if test $c_enabled_pmpi = yes; then
    AC_DEFINE([ENABLE_PMPI], [1], [--enable-pmpi was specified in the C library build])
 fi
-AC_MSG_RESULT($have_pmpi)
-AM_CONDITIONAL([ENABLE_PMPI], [test "c$enabled_pmpi" = xyes])
+AC_MSG_RESULT($c_enabled_pmpi)
+AM_CONDITIONAL([ENABLE_PMPI], [test "$c_enabled_pmpi" = yes])
 
 # Check for function backtrace_symbols. If HAVE_BACKTRACE=yes will
 # enable auto-generation of function name when auto-profiling and
@@ -120,12 +133,6 @@ dnl esac
 # Make sure this file is copied to build directories for tests to
 # work.
 AC_CONFIG_LINKS([test/gptlnl:test/gptlnl])
-
-# Is doxygen installed?
-AC_CHECK_PROGS([DOXYGEN], [doxygen])
-if test -z "$DOXYGEN"; then
-   AC_MSG_WARN([Doxygen not found - documentation will not be built])
-fi
 
 # This is a list of files to be built.
 AC_CONFIG_FILES([Makefile
