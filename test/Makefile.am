@@ -52,7 +52,7 @@ endif
 # Extra test for parallel builds. (Does not build yet).
 if HAVE_LIBMPI
 check_PROGRAMS += pmpi
-TESTS += pmpi
+TESTS += run_par_pmpi_test.sh
 pmpi_SOURCES = pmpi.F90 ${MODFILE}
 
 check_PROGRAMS += threadohd
