@@ -66,7 +66,7 @@ if HAVE_LIBMPI
 # Test the PMPI interface (if installed)
 if ENABLE_PMPI
 check_PROGRAMS += pmpi
-TESTS          += pmpi
+TESTS          += run_par_pmpi_test.sh
 pmpi_SOURCES    = pmpi.F90 ${MODFILE}
 endif
 
