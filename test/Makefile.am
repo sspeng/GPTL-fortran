@@ -6,8 +6,11 @@
 # Find include directory and src directory (for .mod file).
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 
+INSTRFLAG = @INSTRFLAG@
+INSTR_LINK = @INSTR_LINK@
+
 # Link to GPTL fortran library.
-AM_LDFLAGS = ${top_builddir}/src/libgptlf.la -rdynamic
+AM_LDFLAGS = ${top_builddir}/src/libgptlf.la $(INSTRFLAG)
 
 # For combined C/Fortran builds, find the C library.
 # Be careful making changes here: If -lunwind is needed it must come at the end of link cmds
@@ -54,7 +57,7 @@ endif
 
 # Test PAPI functionality if libpapi was found.
 if HAVE_PAPI
-#AM_CPPFLAGS     += -DHAVE_PAPI
+AM_CPPFLAGS     += -DHAVE_PAPI
 check_PROGRAMS  += testinit testpapi
 TESTS           += testinit testpapi 
 testpapi_SOURCES = testpapi.F90 ${MODFILE}

@@ -49,14 +49,29 @@ AC_CHECK_FUNC([MPI_Init],
         [AC_DEFINE([HAVE_LIBMPI], [1], [MPI is present])])
 AM_CONDITIONAL([HAVE_LIBMPI], [test "x$ac_cv_func_MPI_Init" = xyes])
 
-# Determine the have_papi settings for this build.
-AC_MSG_CHECKING([whether PAPI library support was built into the C library])
-AC_CHECK_FUNC([gptl_papilibraryinit], [c_has_papi=yes], [c_has_papi=no])
-if test "$c_has_papi" = yes; then
-   AC_DEFINE([HAVE_PAPI], [1], [PAPI library support is present])
+
+if test x$enable_papi = xyes; then
+# Check for papi library.
+  AC_CHECK_LIB([papi], [PAPI_library_init])
+  AC_MSG_CHECKING([whether system can support PAPI])
+  if test "x$ac_cv_lib_papi_PAPI_library_init" = xyes; then
+    # If we have PAPI library, check /proc/sys/kernel/perf_event_paranoid
+    # to see if we have permissions.
+    if test -f /proc/sys/kernel/perf_event_paranoid; then
+      if test `cat /proc/sys/kernel/perf_event_paranoid` != 1; then
+         AC_MSG_ERROR([PAPI library found, but /proc/sys/kernel/perf_event_paranoid != 1
+                            try sudo sh -c 'echo 1 >/proc/sys/kernel/perf_event_paranoid'])
+      fi
+    fi
+    AC_DEFINE([HAVE_PAPI], [1], [PAPI library is present and usable])
+    LDFLAGS="$LDFLAGS -lpapi"
+    have_papi=yes
+  else
+    have_papi=no
+  fi
+  AC_MSG_RESULT($have_papi)
 fi
-AC_MSG_RESULT($c_has_papi)
-AM_CONDITIONAL([HAVE_PAPI], [test "$c_has_papi" = yes])
+AM_CONDITIONAL([HAVE_PAPI], [test "x$have_papi" = xyes])
 
 # See if the C GPTL was built with ENABLE_PMPI, and set it here in accordance
 AC_MSG_CHECKING([whether ENABLE_PMPI was set in the C library build])
@@ -79,7 +94,8 @@ AC_MSG_RESULT([$ac_cv_func_backtrace_symbols])
 # For auto-profiling, backtrace is the default method to recover current function name.
 # If not available, try libunwind. If neither are available, auto-profiling will not be
 # possible. To use auto auto-profiling with GNU or Intel compilers:
-# Compile application code with -g -finstrument-functions -rdynamic
+# Compile application code with -g and appropriate auto-instrumentation flag
+# Probably the appropriate dynamic linking flag (maybe -rdynamic or -Bdynamic) also is needed
 #
 AC_ARG_ENABLE([libunwind],
     AS_HELP_STRING([--enable-libunwind], [Enable auto-profiling capability via libunwind]))
@@ -98,7 +114,7 @@ if test "x$enable_backtrace" != xno; then
   if test "x$found_backtrace" = xyes; then
     usebacktrace=yes;
     AC_DEFINE([HAVE_BACKTRACE], [1], [backtrace will be used])
-    AC_MSG_NOTICE([backtrace enabled for auto-profiling: Ensure LDFLAGS+= -rdynamic in profiled apps!!!])
+    AC_MSG_NOTICE([backtrace enabled for auto-profiling: dynamic linking flag (see below) probably also needed])
   fi
 fi
 
@@ -107,7 +123,7 @@ if test "x$enable_libunwind" = xyes; then
   if test "x$found_libunwind" = xyes; then
     useunwind=yes;
     AC_DEFINE([HAVE_LIBUNWIND], [1], [libunwind will be used])
-    AC_MSG_NOTICE([libunwind enabled for auto-profiling: Ensure LDFLAGS+= -rdynamic -lunwind in profiled apps!!!])
+    AC_MSG_NOTICE([libunwind enabled for auto-profiling: dynamic linking flag (see below) probably also needed])
   fi
 fi
 
@@ -117,6 +133,28 @@ AM_CONDITIONAL([HAVE_BACKTRACE], [test x$usebacktrace = xyes])
 
 # Need current language to be Fortran to get AC_OPENMP to do the right thing
 AC_LANG_PUSH(Fortran)
+
+# See if auto-instrumentation flag is available. If so, set INSTRFLAG for testing
+if test "x$useunwind" = xyes || test "x$usebacktrace" = xyes; then
+  AX_CHECK_COMPILE_FLAG([-finstrument-functions], [finstrf=yes], [finstrf=no])
+  AX_CHECK_COMPILE_FLAG([-Minstrument:functions], [minstrf=yes], [minstrf=no])
+fi
+
+# Auto-instrumentation often requires a special link flag
+AX_CHECK_LINK_FLAG(-rdynamic, [AC_SUBST([INSTR_LINK], [-rdynamic])], [rdynamic=no])
+if test "x$rdynamic" = xno; then
+  AX_CHECK_LINK_FLAG(-Bdynamic, [AC_SUBST([INSTR_LINK], [-Bdynamic])], [bdynamic=no])
+  if test "x$bdynamic = xno"; then
+    AC_MSG_WARN([Dynamic linking flag not found: Auto-instrumentation may not work properly])
+  fi
+fi
+
+AM_CONDITIONAL([HAVE_INSTRFLAG], [test "x$finstrf" = xyes || test "x$minstrf" = xyes])
+if test "x$finstrf" = xyes; then
+  AC_SUBST([INSTRFLAG],[-finstrument-functions])
+elif test "x$minstrf" = xyes; then
+  AC_SUBST([INSTRFLAG],[-Minstrument:functions])
+fi
 
 # Enable OpenMP support if compiler supports it
 useomp=no;
