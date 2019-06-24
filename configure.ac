@@ -131,6 +131,15 @@ fi
 AM_CONDITIONAL([HAVE_LIBUNWIND], [test x$useunwind = xyes])
 AM_CONDITIONAL([HAVE_BACKTRACE], [test x$usebacktrace = xyes])
 
+# Did the user specify an MPI launcher other than mpiexec?
+AC_MSG_CHECKING([whether a user specified program to run mpi programs])
+AC_ARG_WITH([mpiexec],
+              [AS_HELP_STRING([--with-mpiexec=<command>],
+                              [Specify command to launch MPI parallel tests.])],
+            [MPIEXEC=$with_mpiexec], [MPIEXEC=mpiexec])
+AC_MSG_RESULT([$MPIEXEC])
+AC_SUBST([MPIEXEC], [$MPIEXEC])
+
 # Need current language to be Fortran to get AC_OPENMP to do the right thing
 AC_LANG_PUSH(Fortran)
 
