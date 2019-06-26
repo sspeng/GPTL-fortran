@@ -72,10 +72,12 @@ summary_SOURCES = summary.F90 ${MODFILE}
 # Test the PMPI interface (if installed)
 if ENABLE_PMPI
 check_PROGRAMS += pmpi
-noinst_PROGRAMS += pmpi
-TESTS          += run_par_pmpi_test.sh
-pmpi_SOURCES    = pmpi.F90 ${MODFILE}
-endif
+TESTS += run_par_pmpi_test.sh
+pmpi_SOURCES = pmpi.F90 ${MODFILE}
+
+check_PROGRAMS += threadohd
+#TESTS += threadohd
+threadohd_SOURCES = threadohd.F90 ${MODFILE}
 endif
 
 # Test output to be deleted.
