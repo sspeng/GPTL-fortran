@@ -66,16 +66,16 @@ endif
 
 # MPI program tests
 if HAVE_LIBMPI
-# Test the PMPI interface (if installed)
-if ENABLE_PMPI
-check_PROGRAMS += pmpi
-TESTS          += run_par_pmpi_test.sh
-pmpi_SOURCES    = pmpi.F90 ${MODFILE}
-endif
-
 check_PROGRAMS += summary
 TESTS          += summary
 summary_SOURCES = summary.F90 ${MODFILE}
+# Test the PMPI interface (if installed)
+if ENABLE_PMPI
+check_PROGRAMS += pmpi
+noinst_PROGRAMS += pmpi
+TESTS          += run_par_pmpi_test.sh
+pmpi_SOURCES    = pmpi.F90 ${MODFILE}
+endif
 endif
 
 # Test output to be deleted.
