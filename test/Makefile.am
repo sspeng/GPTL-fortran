@@ -79,6 +79,7 @@ check_PROGRAMS += threadohd
 #TESTS += threadohd
 threadohd_SOURCES = threadohd.F90 ${MODFILE}
 endif
+endif
 
 # Test output to be deleted.
 CLEANFILES = timing.* *_ohd *.mod
