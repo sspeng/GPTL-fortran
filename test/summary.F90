@@ -24,11 +24,9 @@ program main
 #ifdef HAVE_PAPI
 ! Turn abort_on_error off just long enough to check PAPI-based options
   ret = gptlsetoption (gptlabort_on_error, 0)
-  if (gptlevent_name_to_code ('PAPI_FP_OPS', code) == 0) then
+  if (gptlevent_name_to_code ('PAPI_TOT_CYC', code) == 0) then
     ret = gptlsetoption (code, 1)
   end if
-  ret = gptlsetoption (gptl_ci, 1)
-  call checkstat (ret, prognam//': Error from PAPI call: gptlsetoption (gptl_ci, 1)')
   ret = gptlsetoption (gptlabort_on_error, 1)
 #endif
 

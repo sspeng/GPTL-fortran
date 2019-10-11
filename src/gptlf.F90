@@ -29,9 +29,6 @@ module gptl
   integer, parameter :: GPTLmaxthreads     = 51
 
   integer, parameter :: GPTL_IPC           = 17
-  integer, parameter :: GPTL_CI            = 18
-  integer, parameter :: GPTL_FPC           = 19
-  integer, parameter :: GPTL_FPI           = 20
   integer, parameter :: GPTL_LSTPI         = 21
   integer, parameter :: GPTL_DCMRT         = 22
   integer, parameter :: GPTL_LSTPDCM       = 23
