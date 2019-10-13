@@ -2,7 +2,9 @@ program main
 #ifdef THREADED_OMP
   use omp_lib
 #endif
+#ifdef HAVE_LIBMPI
   use mpi
+#endif
   use gptl
 
   implicit none
@@ -10,7 +12,7 @@ program main
   double precision result
   external :: checkstat
 
-  integer :: iam
+  integer :: iam = 0
   integer :: nthreads = 1 ! number of threads (default 1)
   integer :: nproc = 1
   integer iter
@@ -37,15 +39,16 @@ program main
   ret = gptlsetoption (gptlnarrowprint, 1)
   call checkstat (ret, prognam//': Error from gptlsetoption(gptlnarrowprint,1)')
 
+#ifdef HAVE_LIBMPI
   call mpi_init (ierr)
   comm = MPI_COMM_WORLD
+  call mpi_comm_rank (MPI_COMM_WORLD, iam, ierr)
+  call mpi_comm_size (MPI_COMM_WORLD, nproc, ierr)
+#endif
 
   ret = gptlinitialize ()
   call checkstat (ret, prognam//': Error from gptlinitialize()')
   ret = gptlstart ("total")
-	 
-  call mpi_comm_rank (MPI_COMM_WORLD, iam, ierr)
-  call mpi_comm_size (MPI_COMM_WORLD, nproc, ierr)
 
   if (iam == 0) then
     write (6,*) "Purpose: test behavior of summary stats"
@@ -67,8 +70,10 @@ program main
   ret = gptlpr_summary (comm)
   call checkstat (ret, prognam//': Error from gptlpr_summary(comm)')
 
+#ifdef HAVE_LIBMPI
   call mpi_finalize (ret)
-
+#endif
+  
   ret = gptlfinalize ()
   call checkstat (ret, prognam//': Error from gptlfinalize()')
   stop 0

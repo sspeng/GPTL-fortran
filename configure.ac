@@ -222,6 +222,7 @@ AC_CONFIG_FILES([Makefile
                  test/Makefile
 		 ])
 AC_CONFIG_FILES([test/run_par_pmpi_test.sh], [chmod ugo+x test/run_par_pmpi_test.sh])
+AC_CONFIG_FILES([test/run_par_summary_test.sh], [chmod ugo+x test/run_par_summary_test.sh])
 
 # Build the files listed above.
 AC_OUTPUT()

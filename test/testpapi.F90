@@ -68,13 +68,6 @@ program testpapi
     call exit(1)
   end if
   
-  write(6,*)'Testing gptlevent_name_to_code for GPTL_CI...'
-  if (gptlevent_name_to_code ('GPTL_CI', code) /= 0) then
-    write(6,*)'Failure from gptlevent_name_to_code'
-    call exit(1)
-  end if
-  write(6,*)'Success: GPTL_CI=',code
-  
   write(6,*)'Testing too short var for gptlevent_code_to_name...'
   if (gptlevent_code_to_name (code, tooshort) == 0) then
     write(6,*)'Failure of gptlevent_code_to_name to fail'
@@ -82,20 +75,6 @@ program testpapi
   end if
   write(6,*)'Success at catching too short output var name'
   
-  write(6,*)'Testing gptlevent_code_to_name for GPTL_CI...'
-  if (gptlevent_code_to_name (code, name) /= 0) then
-    write(6,*)'Failure from gptlevent_code_to_name'
-    call exit(1)
-  end if
-
-  if (name == 'GPTL_CI') then
-    write(6,*)'Success'
-  else
-    write(6,*)'Failure: got ',trim(name)
-    write(6,*)'Expected GPTL_CI'
-    call exit(1)
-  end if
-
   write(6,*)'Testing bogus input to gptlevent_name_to_code...'
   if (gptlevent_name_to_code ('zzz', code) == 0) then
     write(6,*)'Failure of gptlevent_name_to_code to fail'

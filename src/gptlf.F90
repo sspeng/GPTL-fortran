@@ -72,7 +72,6 @@ module gptl
        character(len=*) :: file
      end function gptlpr_file
 
-#ifdef HAVE_LIBMPI
      integer function gptlpr_summary (fcomm)
        integer :: fcomm
      end function gptlpr_summary
@@ -86,17 +85,6 @@ module gptl
        integer :: fcomm
        character(len=*) :: name
      end function gptlbarrier
-#else
-     integer function gptlpr_summary ()
-     end function gptlpr_summary
-
-     integer function gptlpr_summary_file (name)
-       character(len=*) :: name
-     end function gptlpr_summary_file
-
-     integer function gptlbarrier ()
-     end function gptlbarrier
-#endif
 
      integer function gptlreset ()
      end function gptlreset
